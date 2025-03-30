@@ -13,6 +13,7 @@ import { generateContent, generateLessonPlan } from "./lib/googleai";
 import { contentCache } from "./lib/contentCache";
 import toast, { Toaster } from "react-hot-toast";
 import { ContentDisplay } from "./components/ContentDisplay";
+import LoadingComponent from "./components/LoadingIndicator";
 
 // Enhanced interfaces with more robust typing
 interface SubjectDetails {
@@ -631,56 +632,7 @@ const App: React.FC = () => {
           )}
 
           {/* Loading State */}
-          {isLoading && (
-            <div
-              className="
-                fixed 
-                inset-0 
-                bg-black 
-                bg-opacity-50 
-                flex 
-                items-center 
-                justify-center 
-                z-50
-              "
-            >
-              <div
-                className="
-                  bg-white 
-                  p-8 
-                  rounded-xl 
-                  shadow-2xl 
-                  border-2 
-                  border-blue-100 
-                  text-center
-                "
-              >
-                <div
-                  className="
-                    animate-spin 
-                    rounded-full 
-                    h-16 
-                    w-16 
-                    border-t-4 
-                    border-b-4 
-                    border-blue-500 
-                    mx-auto
-                  "
-                ></div>
-                <p
-                  className="
-                    mt-6 
-                    text-xl 
-                    font-bold 
-                    text-blue-700 
-                    tracking-wide
-                  "
-                >
-                  Processing...
-                </p>
-              </div>
-            </div>
-          )}
+          {isLoading && <LoadingComponent isLoading={isLoading} />}
         </div>
       </main>
     </div>
