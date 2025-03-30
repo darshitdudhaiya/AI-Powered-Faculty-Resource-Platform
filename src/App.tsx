@@ -617,6 +617,16 @@ const App: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {!selectedSection && (
+                <div className="p-6">
+                  <div className="prose max-w-none">
+                    <p>
+                      Please select a section to view its content.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

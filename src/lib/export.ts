@@ -49,7 +49,7 @@ export async function exportToPDF(content: string, filename: string, elementId =
     const pdfHeight = pdf.internal.pageSize.getHeight()
 
     // Get all child elements that could be logical page break points
-    const children = Array.from(clone.querySelectorAll("h1, h2, h3, h4, h5, h6, p, ul, ol, table, pre, blockquote, hr"))
+    const children = Array.from(clone.querySelectorAll("h1, h2, h3, h4, h5, h6, p, ul, ol, table, pre, blockquote, hr, code"))
 
     // Function to process elements in batches for better pagination
     async function processElementBatches() {

@@ -134,7 +134,6 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
         <code
           className={`
             ${className} 
-            bg-gradient-to-r from-purple-100 to-blue-100 
             text-purple-800 
             px-2 py-1 
             rounded-md 
@@ -239,6 +238,7 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
           divide-y 
           divide-blue-100 
           hover:bg-blue-50 
+          border-sky-100
           transition-colors
         "
         {...props}
@@ -249,7 +249,7 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
     th: ({ children, ...props }: any) => (
       <th
         className="
-          px-6 
+          px-2 
           py-3 
           text-left 
           text-xs 
@@ -265,12 +265,12 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
     td: ({ children, ...props }: any) => (
       <td
         className="
-          px-6 
-          py-4 
-          whitespace-nowrap 
+          px-2 
+          py-3 
           text-sm 
           text-gray-700
           hover:bg-blue-100 
+          border-l-sky-100
           transition-colors
         "
         {...props}
