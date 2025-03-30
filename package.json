@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
+    "@microsoft/clarity": "^1.0.0",
     "@supabase/supabase-js": "^2.39.7",
     "file-saver": "^2.0.5",
     "html-to-pdfmake": "^2.5.1",

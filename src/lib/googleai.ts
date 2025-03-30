@@ -1,7 +1,42 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+const API_KEYS = [
+  import.meta.env.VITE_GOOGLE_API_KEY_1,
+  import.meta.env.VITE_GOOGLE_API_KEY_2,
+  import.meta.env.VITE_GOOGLE_API_KEY_3,
+];
 
-const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GOOGLE_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+let currentKeyIndex = 0;
+async function generateAIResponse(prompt: string) {
+  while (currentKeyIndex < API_KEYS.length) {
+    try {
+      const genAI = new GoogleGenerativeAI(API_KEYS[currentKeyIndex]);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+      const result = await model.generateContent(prompt);
+      const response = await result.response;
+      return {
+        success: true,
+        data: response.text(),
+      };
+    } catch (error: any) {
+      console.error("Error generating content:", error);
+
+      if (error.message.includes("limit exceeded")) {
+        console.warn(
+          `API key ${API_KEYS[currentKeyIndex]} exceeded limit. Switching to next key.`
+        );
+        currentKeyIndex++;
+      } else {
+        return {
+          success: false,
+          error: "Failed to generate content. Please try again.",
+        };
+      }
+    }
+  }
+
+  return { success: false, error: "All API keys have reached their limit." };
+}
 
 const formatInstructions = `
 Format the response using proper markdown syntax with:
@@ -122,23 +157,7 @@ ${formattedSyllabus}`,
     ${formattedSyllabus}`,
   };
 
-  try {
-    const prompt = prompts[section];
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    return {
-      success: true,
-      data: text,
-    };
-  } catch (error) {
-    console.error("Error generating content:", error);
-    return {
-      success: false,
-      error: "Failed to generate content. Please try again.",
-    };
-  }
+  return generateAIResponse(prompts[section]);
 }
 
 export async function generateLessonPlan(details: {
@@ -181,20 +200,5 @@ export async function generateLessonPlan(details: {
 **Syllabus Context:**
 ${formattedSyllabus}`;
 
-  try {
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    return {
-      success: true,
-      data: text,
-    };
-  } catch (error) {
-    console.error("Error generating lesson plan:", error);
-    return {
-      success: false,
-      error: "Failed to generate lesson plan. Please try again.",
-    };
-  }
+  return generateAIResponse(prompt);
 }

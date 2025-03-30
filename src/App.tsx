@@ -122,7 +122,6 @@ const App: React.FC = () => {
       [name]: value,
     }));
 
-    console.log(value)
     // Trigger validation
     validateLessonPlan();
   };
@@ -301,7 +300,7 @@ const App: React.FC = () => {
               to-blue-100
             "
             >
-              Faculty Resource Platform
+              LearnGen - AI Powered Faculty Resource Platform{" "}
             </h1>
           </div>
         </div>
@@ -528,7 +527,7 @@ const App: React.FC = () => {
 
                       <div>
                         <label className="block mb-2 text-sm font-medium">
-                          Start Date
+                          Course Start Date
                         </label>
                         <input
                           type="date"
@@ -548,7 +547,7 @@ const App: React.FC = () => {
 
                       <div>
                         <label className="block mb-2 text-sm font-medium">
-                          End Date
+                          Course End Date
                         </label>
                         <input
                           type="date"
@@ -622,9 +621,7 @@ const App: React.FC = () => {
               {!selectedSection && (
                 <div className="p-6">
                   <div className="prose max-w-none">
-                    <p>
-                      Please select a section to view its content.
-                    </p>
+                    <p>Please select a section to view its content.</p>
                   </div>
                 </div>
               )}
