@@ -42,7 +42,7 @@ export function FileUpload({ onFileUpload }: FileUploadProps) {
             {isDragActive ? 'Drop the file here' : 'Drag & drop a file here'}
           </p>
           <p className="text-sm text-gray-500">or click to select a file</p>
-          <p className="mt-2 text-xs text-gray-400">Supported formats: PDF, TXT</p>
+          <p className="mt-2 text-xs text-gray-400">Supported formats: TXT</p>
         </div>
       </div>
     </div>

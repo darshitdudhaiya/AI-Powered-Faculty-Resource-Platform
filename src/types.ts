@@ -1,9 +1,13 @@
-export type Section = 'question-bank' | 'lesson-plan' | 'co-po-mapping' | 'course-material';
+export type Section =
+  | "question-bank"
+  | "lesson-plan"
+  | "co-po-mapping"
+  | "course-material";
 
 export interface SubjectDetails {
   code: string;
   name: string;
-  syllabus: string;
+  syllabus: Record<string, string>;
 }
 
 export interface FileUploadResponse {
@@ -21,4 +25,4 @@ export interface ContentCache {
   [key: string]: GeneratedContent;
 }
 
-export type ExportFormat = 'pdf' | 'csv' | 'pptx';
+export type ExportFormat = "pdf" | "csv" | "pptx";

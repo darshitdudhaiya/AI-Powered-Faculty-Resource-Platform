@@ -8,122 +8,193 @@ Format the response using proper markdown syntax with:
 - Clear headings using # for main sections and ## for subsections
 - Proper spacing between sections using line breaks
 - Section separators using ---
-- Bold text for emphasis using **text**
-- Italics for terminology using *text*
+- **Bold text** for emphasis
+- *Italics* for terminology
 - Code blocks with triple backticks
 - Tables using proper markdown syntax
 - Bullet points and numbered lists where appropriate
 `;
 
 export async function generateContent(
-  section: string,
-  subjectDetails: { code: string; name: string; syllabus: string }
+  section: "question-bank" | "co-po-mapping" | "course-material",
+  subjectDetails: {
+    syllabus: Record<string, string>;
+    code: string;
+    name: string;
+  }
 ) {
+  // Convert syllabus object into structured markdown format
+  const formattedSyllabus = Object.entries(subjectDetails.syllabus)
+    .map(([unit, content]) => `## ${unit}\n${content}`)
+    .join("\n\n---\n\n");
+
   const prompts = {
-    'question-bank': `${formatInstructions}
+    "question-bank": `Generate a Question Bank strictly following this template:
+    - Subject Code: ${subjectDetails.code}
+    - Subject Name: ${subjectDetails.name}
+    
+    The question bank must include:
+    1. Questions mapped to Bloom's Taxonomy levels
+    2. Specify whether it's a one-mark or long question
+    3. Cover multiple units with increasing complexity
+    
+    ## **Subject Code**: [Subject Code] **Subject Name**: [Subject Name]
+    Generate the exact table with these columns:
+    | Sr No | Unit | Question | Bloom's Taxonomy | One Marks Question | Long Question |
+    | --- | --- | --- | --- | --- | --- |
+    | 1 | 1. [Unit Name] | [Question] | [Bloom's Taxonomy] | [Yes/No] | [Yes/No] |
+    | 2 | 1. [Unit Name] | [Question] | [Bloom's Taxonomy] | [Yes/No] | [Yes/No] |
+    | 3 | 2. [Unit Name] | [Question] | [Bloom's Taxonomy] | [Yes/No] | [Yes/No] |
 
-Generate a comprehensive question bank for ${subjectDetails.name} (${subjectDetails.code}) following this structure:
+    **Instructions:**
+    - **Follow the exact table format** without missing columns.
+    - **Use real questions from the syllabus** instead of placeholders.
+    - **Ensure questions are mapped** to Bloom’s Taxonomy categories.
+    - **Specify if each question is a "One Mark" or "Long Question".**
+    - **No additional explanations or formatting changes**—return only the table, Subject Name and Subject Code  . 
 
-# Question Bank - ${subjectDetails.name}
+    
+    **Syllabus Context:**
+    ${formattedSyllabus}`,
 
-## Multiple Choice Questions
-[Generate 10 MCQs with options and answers]
-
-## Short Answer Questions
-[Generate 5 questions with brief answers]
-
-## Long Answer Questions
-[Generate 3 questions with detailed answers]
-
-Base the questions on this syllabus:
-${subjectDetails.syllabus}`,
-
-    'lesson-plan': `${formatInstructions}
-
-Create a detailed lesson plan for ${subjectDetails.name} (${subjectDetails.code}) following this structure:
-
-# Lesson Plan - ${subjectDetails.name}
-
-## Course Overview
-[Brief description of the course]
-
-## Unit-wise Plan
-[For each unit from the syllabus, create sections with:]
-- Learning Objectives
-- Teaching Methods
-- Time Allocation
-- Assessment Strategy
-- Required Resources
-
-Base the plan on this syllabus:
-${subjectDetails.syllabus}`,
-
-    'co-po-mapping': `${formatInstructions}
-
-Create a CO-PO mapping for ${subjectDetails.name} (${subjectDetails.code}) following this structure:
+    "co-po-mapping": `${formatInstructions}
 
 # CO-PO Mapping - ${subjectDetails.name}
 
 ## Course Outcomes (COs)
-[List 5-6 course outcomes]
+[List 5-6 course outcomes relevant to the subject]
 
 ## Program Outcomes (POs)
-[List relevant program outcomes]
+- PO1: (Foundation Knowledge):Apply knowledge of mathematics, programming logic and coding fundamentals for solution architecture and problem solving.
+- PO2:(Problem Analysis):Identify, review, formulate and analyze problems for primarily focusing on customer requirements using critical thinking frameworks.
+- PO3: (Development of Solutions): Design, develop and investigate problems with as an innovative approach for solutions incorporating ESG/SDG goals.
+- PO4: (Modern Tool Usage): Select, adapt and apply modern computational tools such as development of algorithms with an understanding of the limitations including human biases.
+- PO5: (Individual and Teamwork): Function and communicate effectively as an individual or a team leader in diverse and multidisciplinary groups. Use methodologies such as agile.
+- PO6: (Project Management and Finance): Use the principles of project management such as scheduling, work breakdown structure and be conversant with the principles of Finance for profitable project management.
+- PO7: (Ethics): Commit to professional ethics in managing software projects with financial aspects. Learn to use new technologies for cyber security and insulate customers from malware.
+- PO8: (Life-long learning): Change management skills and the ability to learn, keep up with contemporary technologies and ways of working
 
 ## Mapping Matrix
-[Create a mapping table showing relationships]
+| CO | PO1 | PO2 | PO3 | PO4 | PO5 | PO6 | PO7 | PO8 |
+|----|----|----|----|----|----|----|----|----|
+| CO1 | X  | X  |    |    |    |    |    |    |
+| CO2 |    | X  | X  |    |    |    |    |    |
+| CO3 |    |    | X  | X  |    |    |    |    |
 
 ## Justification
-[Provide detailed justification for each mapping]
+[Explain why each CO is mapped to its corresponding POs]
 
-Base the mapping on this syllabus:
-${subjectDetails.syllabus}`,
+---
 
-    'course-material': `${formatInstructions}
+below is the syllabus that should not be included in the generated content:
+**Syllabus Context:**
+${formattedSyllabus}`,
 
-Generate comprehensive study material for ${subjectDetails.name} (${subjectDetails.code}) following this structure:
+    "course-material": `${formatInstructions}
 
-# Course Material - ${subjectDetails.name}
+    # Course Material - ${subjectDetails.name}
 
-## Course Introduction
-[Overview of the course]
+    ## Course Introduction
+    [Give an overview of the subject, its importance, and applications.]
+    
+    ## Topics Covered
 
-## Unit-wise Content
-[For each unit from the syllabus, include:]
-### Key Concepts
-[List and explain main concepts]
+    Identify key topics within ${formattedSyllabus} and generate structured content for each. 
 
-### Detailed Explanations
-[In-depth coverage of topics]
+    ### Topic 1: [Automatically Identify a Core Concept]
+    - **What is it?**
+      - [Explain fundamental concepts]
+    - **How does it work?**
+      - [Break down principles and processes]
+    - **Why is it important?**
+      - [Explain relevance and impact]
+    - **Examples & Applications**
+      - [Provide real-world use cases]
+    - **Practice Problems**
+      - [List exercises with solutions]
 
-### Examples & Applications
-[Real-world examples and use cases]
-
-### Practice Problems
-[Sample problems with solutions]
-
-### Additional Resources
-[References and supplementary materials]
-
-Base the content on this syllabus:
-${subjectDetails.syllabus}`
+    ### Topic 2: [Next Key Concept]
+    [Repeat structure for each identified topic]
+    
+    ---
+    
+    Ensure all topics are covered clearly and concisely based on the syllabus:
+    ${formattedSyllabus}`,
   };
 
   try {
-    const prompt = prompts[section as keyof typeof prompts];
+    const prompt = prompts[section];
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
 
     return {
       success: true,
-      data: text
+      data: text,
     };
   } catch (error) {
-    console.error('Error generating content:', error);
+    console.error("Error generating content:", error);
     return {
       success: false,
-      error: 'Failed to generate content. Please try again.'
+      error: "Failed to generate content. Please try again.",
+    };
+  }
+}
+
+export async function generateLessonPlan(details: {
+  subjectName: string;
+  subjectCode: string;
+  lecturesPerWeek: number;
+  startDate: string;
+  endDate: string;
+  syllabus: Record<string, string>;
+}) {
+  // Convert syllabus object into structured markdown format
+  const formattedSyllabus = Object.entries(details.syllabus)
+    .map(([unit, content]) => `## ${unit}\n${content}`)
+    .join("\n\n---\n\n");
+
+  const prompt = `Generate a structured lesson plan for ${details.subjectName} (${details.subjectCode}) following this format:
+
+  | Sr No | Week | Day | Unit-No | Unit-Name | Topics to be Covered |
+  | --- | --- | --- | --- | --- | --- |
+  | 1 | 1 | 1 | Unit-1 | [Unit Name] | [Topics] |
+  | 2 | 1 | 2 | Unit-1 | [Unit Name] | [Topics] |
+  | 3 | 1 | 3 | Unit-2 | [Unit Name] | [Topics] |
+  | 4 | 2 | 1 | - | - | - |
+
+  
+  **Instructions:**
+  - **Do NOT modify the table structure.**
+  - **Use real syllabus topics** in the "Topics to be Covered" column.
+  - **Ensure each unit is covered across multiple weeks/days.**
+  - **Do not add extra text—return only the table.**
+
+**Guidelines:**
+- **Total Lectures per Week:** ${details.lecturesPerWeek}
+- **Semester Duration:** ${details.startDate} to ${details.endDate}
+- **Cover the full syllabus logically**
+- **Account for breaks and revisions**
+
+---
+
+**Syllabus Context:**
+${formattedSyllabus}`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    return {
+      success: true,
+      data: text,
+    };
+  } catch (error) {
+    console.error("Error generating lesson plan:", error);
+    return {
+      success: false,
+      error: "Failed to generate lesson plan. Please try again.",
     };
   }
 }

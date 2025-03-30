@@ -18,24 +18,32 @@ export async function extractTextFromPDF(file: File): Promise<string> {
 }
 
 export async function extractSubjectDetails(content: string) {
-  // Basic regex patterns for subject code and name
-  const codePattern = /(?:Subject|Course)\s+Code\s*:?\s*([A-Z0-9]+)/i;
-  const namePattern = /(?:Subject|Course)\s+(?:Title|Name)\s*:?\s*([^\n]+)/i;
+  // Regex patterns for subject details
+  const codePattern = /(?:Course|Subject)\s+Code\s*:?\s*([\dA-Z]+)/i;
+  const namePattern = /(?:Course|Subject)\s+(?:Name|Title)\s*:?\s*([^\n]+)/i;
 
   const codeMatch = content.match(codePattern);
   const nameMatch = content.match(namePattern);
 
-  // Extract syllabus content (everything after subject details)
-  const syllabusContent = content
-    .split(/Unit[- ][1I]/i)[1] // Split at first unit
-    ?.trim() || content; // Fallback to full content if no units found
+  // Extract all units dynamically
+  const unitPattern = /(Unit[\s\-_:]*[IVXLCDM1-9]+)[\s]*(.*?)(?=(Unit[\s\-_:]*[IVXLCDM1-9]+|$))/gis;
+  let syllabus: Record<string, string> = {};
+
+  let match;
+  while ((match = unitPattern.exec(content)) !== null) {
+    const unitTitle = match[1].trim(); // Extract unit title (e.g., "Unit I", "Unit-1")
+    const unitContent = match[2].trim(); // Extract content between units
+    syllabus[unitTitle] = unitContent;
+  }
 
   return {
     code: codeMatch?.[1]?.trim() || '',
     name: nameMatch?.[1]?.trim() || '',
-    syllabus: syllabusContent
+    syllabus
   };
 }
+
+
 
 export async function processFile(file: File) {
   try {

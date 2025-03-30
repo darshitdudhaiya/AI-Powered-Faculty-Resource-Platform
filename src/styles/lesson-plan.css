@@ -1,0 +1,45 @@
+/* Additional styles for lesson plan tables */
+.lesson-plan-content table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 1rem 0 !important;
+  border: 1px solid #e5e7eb !important;
+  table-layout: fixed !important;
+}
+
+.lesson-plan-content th,
+.lesson-plan-content td {
+  border: 1px solid #e5e7eb !important;
+  padding: 0.5rem !important;
+  text-align: left !important;
+  word-wrap: break-word !important;
+}
+
+.lesson-plan-content th {
+  background-color: #f9fafb !important;
+  font-weight: 600 !important;
+}
+
+.lesson-plan-content tr:hover {
+  background-color: #f9fafb !important;
+}
+
+/* Ensure metric form tables are properly styled */
+.lesson-plan-content .metric-form-table,
+.lesson-plan-content table[data-type="metric-form"] {
+  border: 2px solid #d1d5db !important;
+  margin-bottom: 2rem !important;
+}
+
+.lesson-plan-content .metric-form-table th,
+.lesson-plan-content table[data-type="metric-form"] th {
+  background-color: #e5e7eb !important;
+  color: #374151 !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+.lesson-plan-content .metric-form-table td,
+.lesson-plan-content table[data-type="metric-form"] td {
+  vertical-align: middle !important;
+}

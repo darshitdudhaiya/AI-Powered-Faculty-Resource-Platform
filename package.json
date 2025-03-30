@@ -12,9 +12,12 @@
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
     "@supabase/supabase-js": "^2.39.7",
+    "file-saver": "^2.0.5",
     "html-to-pdfmake": "^2.5.1",
+    "html2pdf.js": "^0.10.3",
     "jspdf": "^2.5.1",
     "lucide-react": "^0.344.0",
+    "md-to-pdf": "^5.2.4",
     "pdfjs-dist": "^4.0.379",
     "pdfmake": "^0.2.9",
     "react": "^18.3.1",
@@ -22,6 +25,8 @@
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
     "react-markdown": "^9.0.1",
+    "react-syntax-highlighter": "^15.6.1",
+    "remark": "^15.0.1",
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
