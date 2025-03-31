@@ -341,6 +341,7 @@ const App: React.FC = () => {
                   height="25"
                 />{" "}
               </a>
+              
               <a
                 href="https://github.com/darshitdudhaiya/AI-Powered-Faculty-Resource-Platform?utm_source=learngen.vercel.app"
                 className="flex items-center gap-2 px-6 py-2 w-full text-center hover:bg-gray-200"
