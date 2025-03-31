@@ -1,6 +1,6 @@
 # LearnGen - AI Powered Faculty Resource Platform
 
-![LearnGen](https://learngen.vercel.app/Banner.png)
+![LearnGen](https://raw.githubusercontent.com/darshitdudhaiya/AI-Powered-Faculty-Resource-Platform/refs/heads/main/Banner.png)
 
 ## 📌 Overview
 **Faculty Resource Platform** is an AI-powered tool that helps faculty members generate essential academic resources effortlessly. Users can upload a **TXT file** containing a subject code, subject name, and syllabus, and the platform will generate:
