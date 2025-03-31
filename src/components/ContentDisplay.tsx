@@ -1,131 +1,108 @@
-"use client";
+"use client"
 
-import { useRef, useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { Download, Settings } from "lucide-react";
-import type { Section } from "../types";
-import {
-  exportToPDF,
-  exportToPDFWithPaged,
-  exportToCSV,
-  getExportFormats,
-} from "../lib/export";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
-import {
-  enhanceMarkdownTables,
-  containsMetricFormTables,
-} from "../lib/markdown-parser";
+import { useRef, useState, useEffect } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import { Download } from "lucide-react"
+import { exportToPDF, exportToPDFWithPaged, exportToCSV, getExportFormats } from "../lib/export"
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
+import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism"
+import { enhanceMarkdownTables, containsMetricFormTables } from "../lib/markdown-parser"
 
 interface ContentDisplayProps {
-  content: string;
-  section: Section;
+  content: string
+  section: string
 }
 
 export function ContentDisplay({ content, section }: ContentDisplayProps) {
-  const markdownRef = useRef<HTMLDivElement>(null);
-  const exportFormats = getExportFormats(section);
-  const [showExportOptions, setShowExportOptions] = useState(false);
-  const [exportMethod, setExportMethod] = useState<"standard" | "paged">(
-    "paged"
-  );
-  const [pageSize, setPageSize] = useState<"a4" | "letter">("a4");
-  const [orientation, setOrientation] = useState<"portrait" | "landscape">(
-    "portrait"
-  );
-  const [processedContent, setProcessedContent] = useState(content);
-  const [hasMetricTables, setHasMetricTables] = useState(false);
+  const markdownRef = useRef<HTMLDivElement>(null)
+  const exportFormats = getExportFormats(section)
+  const [showExportOptions, setShowExportOptions] = useState(false)
+  const [exportMethod, setExportMethod] = useState<"standard" | "paged">("paged")
+  const [pageSize, setPageSize] = useState<"a4" | "letter">("a4")
+  const [orientation, setOrientation] = useState<"portrait" | "landscape">("portrait")
+  const [processedContent, setProcessedContent] = useState(content)
+  const [hasMetricTables, setHasMetricTables] = useState(false)
 
   const preprocessContent = (rawContent: string) => {
     // If the content starts and ends with code block markers, and looks like a markdown table
-    if (
-      section === "lesson-plan" || section === "question-bank"
-    ) {
+    if (section === "lesson-plan" || section === "question-bank") {
       // Remove the first and last lines (code block markers)
-      return rawContent.replace(/^.*\n|\n$/g, "");
+      return rawContent.replace(/^.*\n|\n$/g, "")
     }
-    return rawContent;
-  };
+    return rawContent
+  }
+
   // Process content when it changes or section changes
   useEffect(() => {
     // Check if content contains metric form tables
-    const hasMetricTables = containsMetricFormTables(content);
-    setHasMetricTables(hasMetricTables);
+    const hasMetricTables = containsMetricFormTables(content)
+    setHasMetricTables(hasMetricTables)
 
-    const processedRawContent = preprocessContent(content);
+    const processedRawContent = preprocessContent(content)
 
     // If this is a lesson plan and contains metric tables, enhance the markdown
     if (section === "lesson-plan" && hasMetricTables) {
-      const enhanced = enhanceMarkdownTables(processedRawContent, section);
-      setProcessedContent(enhanced);
+      const enhanced = enhanceMarkdownTables(processedRawContent, section)
+      setProcessedContent(enhanced)
     } else {
-      setProcessedContent(processedRawContent);
+      setProcessedContent(processedRawContent)
     }
-  }, [content, section]);
+  }, [content, section])
 
   // Add effect to ensure tables are properly rendered in lesson-plan section
   useEffect(() => {
     // Add specific styling for lesson plan tables
     if (section === "lesson-plan" && markdownRef.current) {
       // Force table rendering by slightly modifying the DOM
-      const tables = markdownRef.current.querySelectorAll("table");
+      const tables = markdownRef.current.querySelectorAll("table")
       tables.forEach((table) => {
         if (!table.classList.contains("min-w-full")) {
-          table.classList.add(
-            "min-w-full",
-            "border-collapse",
-            "border",
-            "border-gray-300"
-          );
+          table.classList.add("min-w-full", "border-collapse", "border-2", "border-black")
 
           // Add data attribute to help with styling
-          table.setAttribute("data-type", "metric-form");
-          table.classList.add("metric-form-table");
+          table.setAttribute("data-type", "metric-form")
+          table.classList.add("metric-form-table")
         }
-      });
+      })
 
       // Also ensure all table cells have proper styling
-      const cells = markdownRef.current.querySelectorAll("th, td");
+      const cells = markdownRef.current.querySelectorAll("th, td")
       cells.forEach((cell) => {
         if (!cell.classList.contains("border")) {
-          cell.classList.add("border", "border-gray-300", "px-4", "py-2");
+          cell.classList.add("border", "border-gray-300", "px-4", "py-2")
         }
-      });
+      })
     }
-  }, [processedContent, section]);
+  }, [processedContent, section])
 
   const handleExport = (format: "pdf" | "csv") => {
-    const filename = `${section}-${new Date().toISOString().split("T")[0]}`;
+    const filename = `${section}-${new Date().toISOString().split("T")[0]}`
 
     switch (format) {
       case "pdf":
         if (exportMethod === "paged") {
-          exportToPDFWithPaged(
-            processedContent,
-            `${filename}.pdf`,
-            "markdown-content"
-          );
+          exportToPDFWithPaged(processedContent, `${filename}.pdf`, "markdown-content")
         } else {
-          exportToPDF(processedContent, `${filename}.pdf`, "markdown-content");
+          exportToPDF(processedContent, `${filename}.pdf`, "markdown-content")
         }
-        break;
+        break
       case "csv":
-        exportToCSV(processedContent, `${filename}.csv`);
-        break;
+        exportToCSV(processedContent, `${filename}.csv`)
+        break
     }
-  };
+  }
 
   // Enhanced components with specific handling for lesson-plan tables
   const components = {
     code({ node, inline, className, children, ...props }: any) {
-      const match = /language-(\w+)/.exec(className || "");
+      const match = /language-(\w+)/.exec(className || "")
       return !inline && match ? (
         <SyntaxHighlighter
           style={tomorrow}
           language={match[1]}
           PreTag="div"
-          className="rounded-lg shadow-md"
+          className="rounded-lg border-2 border-black shadow-md"
           {...props}
         >
           {String(children).replace(/\n$/, "")}
@@ -134,17 +111,18 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
         <code
           className={`
             ${className} 
-            text-purple-800 
+            text-[#ff4500] 
             px-2 py-1 
             rounded-md 
             text-sm 
             font-mono
+            border border-black
           `}
           {...props}
         >
           {children}
         </code>
-      );
+      )
     },
     h1: (props: any) => (
       <h1
@@ -153,13 +131,9 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
           font-extrabold 
           mb-6 
           pb-2 
-          bg-gradient-to-r 
-          from-blue-500 
-          to-purple-600 
-          bg-clip-text 
-          text-transparent 
-          border-b-4 
-          border-blue-300
+          text-black
+          border-b-2 
+          border-black
         "
         {...props}
       />
@@ -171,9 +145,9 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
           font-bold 
           mt-6 
           mb-4 
-          text-blue-700 
+          text-black
           border-l-4 
-          border-green-500 
+          border-[#ff4500] 
           pl-4
         "
         {...props}
@@ -186,19 +160,19 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
           font-semibold 
           mt-4 
           mb-3 
-          text-purple-600 
-          border-b 
-          border-purple-200 
+          text-black
+          border-b-2
+          border-black
           pb-2
         "
         {...props}
       />
     ),
     table: ({ node, className, children, ...props }: any) => {
-      const isMetricTable = section === "lesson-plan" && hasMetricTables;
+      const isMetricTable = section === "lesson-plan" && hasMetricTables
       const tableClass = isMetricTable
         ? "w-full border-collapse rounded-lg overflow-hidden shadow-lg"
-        : "w-full border-collapse rounded-lg overflow-hidden shadow-md";
+        : "w-full border-collapse rounded-lg overflow-hidden shadow-md"
 
       return (
         <div className="overflow-x-auto my-6 transform transition-all hover:scale-[1.01]">
@@ -206,9 +180,9 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
             className={`
               ${tableClass} 
               bg-white 
-              text-gray-800 
+              text-black
               border-2 
-              border-blue-100
+              border-black
               hover:shadow-xl
             `}
             data-type={isMetricTable ? "metric-form" : "standard"}
@@ -217,14 +191,12 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
             {children}
           </table>
         </div>
-      );
+      )
     },
     thead: ({ children, ...props }: any) => (
       <thead
         className="
-          bg-gradient-to-r 
-          from-blue-400 
-          to-purple-500 
+          bg-black
           text-white
         "
         {...props}
@@ -235,10 +207,9 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
     tbody: ({ children, ...props }: any) => (
       <tbody
         className="
-          divide-y 
-          divide-blue-100 
-          hover:bg-blue-50 
-          border-sky-100
+          divide-y-2
+          divide-black
+          hover:bg-[#00ffb3]/10
           transition-colors
         "
         {...props}
@@ -249,7 +220,7 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
     th: ({ children, ...props }: any) => (
       <th
         className="
-          px-2 
+          px-3
           py-3 
           text-left 
           text-xs 
@@ -265,12 +236,12 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
     td: ({ children, ...props }: any) => (
       <td
         className="
-          px-2 
+          px-3
           py-3 
           text-sm 
-          text-gray-700
-          hover:bg-blue-100 
-          border-l-sky-100
+          text-black
+          hover:bg-[#00ffb3]/20
+          border-l border-gray-300
           transition-colors
         "
         {...props}
@@ -278,7 +249,7 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
         {children}
       </td>
     ),
-  };
+  }
 
   return (
     <div
@@ -288,15 +259,12 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
         shadow-2xl 
         overflow-hidden 
         border-2 
-        border-blue-100 
-        animate-fade-in
+        border-black
       "
     >
       <div
         className="
-          bg-gradient-to-r 
-          from-blue-500 
-          to-purple-600 
+          bg-black
           p-4 
           flex 
           justify-between 
@@ -323,11 +291,14 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
                 items-center 
                 px-4 
                 py-2 
-                bg-white 
-                text-blue-600 
-                rounded-full 
+                bg-[#00ffb3]
+                text-black
+                font-bold
+                rounded-md
+                border-2
+                border-black
                 shadow-md 
-                hover:bg-blue-50 
+                hover:bg-[#00ffb3]/90
                 transition-all 
                 transform 
                 hover:scale-105
@@ -347,8 +318,7 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
           p-8 
           prose 
           max-w-none 
-          bg-gray-50 
-          bg-opacity-50 
+          bg-white
           min-h-[300px]
         "
       >
@@ -361,5 +331,6 @@ export function ContentDisplay({ content, section }: ContentDisplayProps) {
         </ReactMarkdown>
       </div>
     </div>
-  );
+  )
 }
+

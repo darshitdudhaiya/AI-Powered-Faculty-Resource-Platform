@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import type React from "react";
+import { useState, useEffect } from "react";
 import { FileUpload } from "./components/FileUpload";
 import {
   GraduationCap,
@@ -7,6 +10,11 @@ import {
   ListChecks,
   Presentation,
   AlertCircle,
+  Github,
+  X,
+  Menu,
+  Linkedin,
+  Twitter,
 } from "lucide-react";
 import { processFile } from "./lib/fileProcessor";
 import { generateContent, generateLessonPlan } from "./lib/googleai";
@@ -54,6 +62,8 @@ const App: React.FC = () => {
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
   const [generatedContent, setGeneratedContent] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+
   const [generatedContents, setGeneratedContents] = useState<{
     [key: string]: string | null;
   }>({});
@@ -78,7 +88,6 @@ const App: React.FC = () => {
   // Validate lesson plan details
   const validateLessonPlan = () => {
     const errors: string[] = [];
-
     if (!lessonPlan.facultyName.trim()) {
       errors.push("Faculty Name is required");
     }
@@ -183,7 +192,9 @@ const App: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }; // Modified handleSectionSelect function
+  };
+
+  // Modified handleSectionSelect function
   const handleSectionSelect = async (section: Section) => {
     if (!subjectDetails) return;
 
@@ -270,368 +281,474 @@ const App: React.FC = () => {
   }, [subjectDetails]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen bg-white">
       <Toaster position="top-right" />
 
-      {/* Header */}
-      <header
-        className="
-        bg-gradient-to-r 
-        from-blue-500 
-        to-purple-600 
-        shadow-2xl 
-        border-b-4 
-        border-blue-200
-      "
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center gap-4">
-            <GraduationCap className="w-10 h-10 text-white" />
-            <h1
-              className="
-              text-3xl 
-              font-extrabold 
-              text-white 
-              tracking-wide 
-              bg-clip-text 
-              text-transparent 
-              bg-gradient-to-r 
-              from-white 
-              to-blue-100
-            "
+      {/* Navigation Bar */}
+      <nav className="fixed top-0 left-0 w-full z-50 border-b border-black bg-white py-3 px-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <div className="bg-[#ff4500] rounded-md p-1">
+              <GraduationCap className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-lg">LearnGen</span>
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex gap-4">
+            <a
+              href="https://www.producthunt.com/posts/learngen?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-learngen"
+              target="_blank"
             >
-              LearnGen - AI Powered Faculty Resource Platform{" "}
-            </h1>
+              <img
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=947579&theme=light&t=1743375825777"
+                alt="LearnGen - AI&#0032;Powered&#0032;Faculty&#0032;Resource&#0032;Platform | Product Hunt"
+                style={{ width: "250px", height: "45px" }}
+                width="250"
+                height="25"
+              />
+            </a>
+            <a
+              href="https://github.com/darshitdudhaiya/AI-Powered-Faculty-Resource-Platform?utm_source=learngen.vercel.app"
+              className="flex items-center gap-1 px-3 py-1 text-sm font-medium rounded-full bg-gray-100"
+            >
+              <Github />
+              <span>GitHub</span>
+            </a>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-white border-t border-black shadow-lg py-2 ">
+            <div className="flex flex-col items-center gap-3 justify-center">
+              <a
+                href="https://www.producthunt.com/posts/learngen?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-learngen"
+                target="_blank"
+                className=" py-2 w-full text-center hover:bg-gray-200"
+              >
+                <img
+                  src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=947579&theme=light&t=1743375825777"
+                  alt="LearnGen - AI&#0032;Powered&#0032;Faculty&#0032;Resource&#0032;Platform | Product Hunt"
+                  style={{ width: "250px", height: "45px" }}
+                  width="250"
+                  height="25"
+                />{" "}
+              </a>
+              <a
+                href="https://github.com/darshitdudhaiya/AI-Powered-Faculty-Resource-Platform?utm_source=learngen.vercel.app"
+                className="flex items-center gap-2 px-6 py-2 w-full text-center hover:bg-gray-200"
+              >
+                <Github />
+                <span>GitHub</span>
+              </a>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <div className="max-w-4xl mx-auto px-4 py-12 text-center mt-10">
+        <div className="border-2 border-black border-b-4 border-r-4 rounded-lg p-4 mb-4">
+          <h1 className="text-4xl font-bold">
+            LearnGen: AI Powered Faculty Resource Platform
+          </h1>
+        </div>
+        <div className="bg-[#ff4500] text-white p-4 border-2 border-black border-b-4 border-r-4 rounded-lg mb-8">
+          <p className="font-medium">
+            A revolutionary approach to modern education. Built with
+            cutting-edge AI technology.
+          </p>
+        </div>
+        <div className="flex justify-center gap-4 mb-12">
+          <a
+            href="#demo"
+            className="cursor-pointer px-6 py-2 bg-[#00ffb3] text-black font-medium rounded-md border-2 border-black border-b-4 border-r-4 hover:border-t-4 hover:border-l-4 hover:bg-opacity-90 hover:border-b-2 hover:border-r-2 transition-all"
+          >
+            Try Demo
+          </a>
+          <a
+            href="#instruction"
+            className="px-6 py-2 bg-white text-black font-medium rounded-md border-2 border-black border-b-4 border-r-4 hover:border-b-2 hover:border-r-2 hover:border-t-4 hover:border-l-4  hover:bg-gray-50 transition-all"
+          >
+            Learn More
+          </a>
+        </div>
+      </div>
+
+      {/* Instructions Section */}
+      <div className="max-w-4xl mx-auto px-4 mb-12" id="instruction">
+        <div className="border-2 border-black rounded-lg overflow-hidden">
+          <div className="bg-black text-white p-4">
+            <h2 className="text-xl font-bold">File Format Instructions</h2>
+          </div>
+          <div className="p-6 bg-white">
+            <div className="mb-4">
+              <h3 className="text-lg font-bold border-l-4 border-[#ff4500] pl-3 mb-3">
+                Required Format
+              </h3>
+              <p className="mb-3">
+                To ensure optimal results, please format your syllabus text
+                files according to these guidelines:
+              </p>
+              <ul className="list-disc pl-6 space-y-2">
+                <li className="font-medium">
+                  <span className="text-[#ff4500] font-bold">File Type:</span>{" "}
+                  Plain text (.txt) files only
+                </li>
+                <li className="font-medium">
+                  <span className="text-[#ff4500] font-bold">Structure:</span>{" "}
+                  The file should begin with the subject code and name clearly
+                  identified
+                </li>
+                <li className="font-medium">
+                  <span className="text-[#ff4500] font-bold">Content:</span>{" "}
+                  Include a clear syllabus section with topics organized by
+                  units or modules
+                </li>
+                <li className="font-medium">
+                  <span className="text-[#ff4500] font-bold">Size Limit:</span>{" "}
+                  Maximum file size of 5MB
+                </li>
+              </ul>
+            </div>
+
+            <div className="mb-4">
+              <h3 className="text-lg font-bold border-l-4 border-[#ff4500] pl-3 mb-3">
+                Example Format
+              </h3>
+              <div className="bg-gray-100 p-4 rounded-lg border-2 border-black font-mono text-sm">
+                <p>
+                  <strong>Subject Code:</strong> CS101
+                </p>
+                <p>
+                  <strong>Subject Name:</strong> Introduction to Computer
+                  Science
+                </p>
+                <p>
+                  <strong>Syllabus:</strong>
+                </p>
+                <p>Unit 1: Introduction to Computing</p>
+                <p>- History of computers</p>
+                <p>- Basic computer architecture</p>
+                <p>- Introduction to algorithms</p>
+                <p>Unit 2: Programming Fundamentals</p>
+                <p>- Variables and data types</p>
+                <p>- Control structures</p>
+                <p>- Functions and procedures</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-bold border-l-4 border-[#ff4500] pl-3 mb-3">
+                Tips for Best Results
+              </h3>
+              <ul className="list-disc pl-6 space-y-2">
+                <li className="font-medium">
+                  Ensure clear section headings for each unit or module
+                </li>
+                <li className="font-medium">
+                  Use consistent formatting throughout the document
+                </li>
+                <li className="font-medium">
+                  Include detailed topic descriptions for more comprehensive
+                  generated content
+                </li>
+                <li className="font-medium">
+                  Remove any unnecessary headers, footers, or page numbers
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="bg-[#00ffb3] p-3 border-t-2 border-black">
+            <p className="text-center font-bold">
+              Following these guidelines will help our AI generate more accurate
+              and useful content for your course
+            </p>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
-          {/* File Upload Section */}
-          <section
-            className="
-            bg-white 
-            rounded-xl 
-            shadow-2xl 
-            overflow-hidden 
-            border-2 
-            border-blue-100 
-            animate-fade-in
-          "
-          >
-            <div
-              className="
-              text-transparent 
-              bg-clip-text 
-              bg-gradient-to-r 
-              from-blue-500 
-              to-purple-600 
-              border-2 
-              border-blue-500 
-              rounded-t-xl
-              p-4
-            "
-            >
-              <h2 className="text-xl font-bold tracking-wide">
-                Upload Syllabus
-              </h2>
-            </div>
-            <div className="p-6">
-              <FileUpload onFileUpload={handleFileUpload} />
-            </div>
-          </section>
-
-          {/* Subject Details */}
-          {subjectDetails && (
-            <section
-              className="
-              bg-white 
-              rounded-xl 
-              shadow-2xl 
-              overflow-hidden 
-              border-2 
-              border-blue-100 
-              animate-fade-in
-            "
-            >
-              <div
-                className="
-                text-transparent 
-              bg-clip-text 
-              bg-gradient-to-r 
-              from-blue-500 
-              to-purple-600 
-              border-2 
-              border-blue-500 
-              rounded-t-xl
-              p-4
-              "
-              >
-                <h3 className="text-xl font-bold tracking-wide">
-                  Subject Details
-                </h3>
+      <main className="max-w-7xl mx-auto px-4 pb-16" id="demo">
+        <div className="bg-[#00ffb3] rounded-xl p-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <div className="bg-[#ff9d42] text-black font-bold text-xl p-3 rounded-lg mb-4 inline-block">
+                The Solution
               </div>
-              <div className="p-6 space-y-2">
-                <p>
-                  <span className="font-bold text-blue-700">Code:</span>{" "}
-                  <span className="text-gray-800">{subjectDetails.code}</span>
-                </p>
-                <p>
-                  <span className="font-bold text-blue-700">Name:</span>{" "}
-                  <span className="text-gray-800">{subjectDetails.name}</span>
-                </p>
+              <div className="bg-white p-4 rounded-lg">
+                <h3 className="text-lg font-bold mb-4">Upload Syllabus</h3>
+                <FileUpload onFileUpload={handleFileUpload} />
               </div>
-            </section>
-          )}
+            </div>
 
-          {/* Tabbed Sections */}
-          {subjectDetails && (
-            <div
-              className="
-              bg-white 
-              rounded-xl 
-              shadow-2xl 
-              overflow-hidden 
-              border-2 
-              border-blue-100 
-              animate-fade-in
-            "
-            >
-              {/* Tab Navigation */}
-              <div
-                className="
-                bg-gradient-to-r 
-                from-blue-500 
-                to-purple-600 
-                border-b-4 
-                border-blue-200
-              "
-              >
-                <nav className="-mb-px flex" aria-label="Tabs">
-                  {SECTIONS.map((section) => {
-                    const Icon = section.icon;
-                    return (
-                      <button
-                        key={section.id}
-                        onClick={() => {
-                          setSelectedSection(section);
-                          if (section.id !== "lesson-plan") {
-                            handleSectionSelect(section);
-                          }
-                        }}
-                        className={`
-                        group 
-                        inline-flex 
-                        items-center 
-                        py-4 
-                        px-6 
-                        text-sm 
-                        font-bold 
-                        tracking-wide 
-                        transition-all 
-                        transform 
-                        hover:scale-105
-                        ${
-                          selectedSection?.id === section.id
-                            ? "text-white bg-white bg-opacity-20"
-                            : "text-blue-100 hover:text-white"
+            {subjectDetails && (
+              <div className="bg-white p-6 rounded-lg">
+                <h3 className="text-xl font-bold mb-4">Subject Details</h3>
+                <div className="space-y-2">
+                  <p>
+                    <span className="font-bold text-black">Code:</span>{" "}
+                    <span className="text-gray-800">{subjectDetails.code}</span>
+                  </p>
+                  <p>
+                    <span className="font-bold text-black">Name:</span>{" "}
+                    <span className="text-gray-800">{subjectDetails.name}</span>
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Tabbed Sections */}
+        {subjectDetails && (
+          <div className="bg-white border-2 border-black rounded-xl overflow-hidden">
+            {/* Tab Navigation */}
+            <div className="bg-black text-white">
+              <nav className="flex" aria-label="Tabs">
+                {SECTIONS.map((section) => {
+                  const Icon = section.icon;
+                  return (
+                    <button
+                      key={section.id}
+                      onClick={() => {
+                        setSelectedSection(section);
+                        if (section.id !== "lesson-plan") {
+                          handleSectionSelect(section);
                         }
-                      `}
-                      >
-                        <Icon
-                          className={`
-                          -ml-0.5 
-                          mr-2 
-                          h-5 
-                          w-5 
-                          ${
-                            selectedSection?.id === section.id
-                              ? "text-white"
-                              : "text-blue-200 group-hover:text-white"
-                          }
-                        `}
-                          aria-hidden="true"
-                        />
-                        <span>{section.label}</span>
-                      </button>
-                    );
-                  })}
-                </nav>
-              </div>
-              {selectedSection?.id === "lesson-plan" && (
-                <>
-                  <div className="p-6 space-y-4">
-                    <h3 className="text-lg font-semibold">
-                      Lesson Plan Details
-                    </h3>
+                      }}
+                      className={`
+                      group 
+                      inline-flex 
+                      items-center 
+                      py-3 
+                      px-6 
+                      text-sm 
+                      font-bold 
+                      transition-all
+                      ${
+                        selectedSection?.id === section.id
+                          ? "bg-[#ff4500] text-white"
+                          : "text-white hover:bg-gray-800"
+                      }
+                    `}
+                    >
+                      <Icon className="mr-2 h-5 w-5" aria-hidden="true" />
+                      <span>{section.label}</span>
+                    </button>
+                  );
+                })}
+              </nav>
+            </div>
 
-                    {/* Validation Errors Display */}
-                    {lessonPlanValidation.errors.length > 0 && (
-                      <div className="bg-red-50 border border-red-200 p-4 rounded">
-                        <div className="flex items-center text-red-700 mb-2">
-                          <AlertCircle className="mr-2 h-5 w-5" />
-                          <span className="font-semibold">
-                            Validation Errors
-                          </span>
-                        </div>
-                        <ul className="list-disc list-inside text-red-600">
-                          {lessonPlanValidation.errors.map((error, index) => (
-                            <li key={index}>{error}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+            {selectedSection?.id === "lesson-plan" && (
+              <>
+                <div className="p-6 space-y-4">
+                  <h3 className="text-lg font-bold">Lesson Plan Details</h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block mb-2 text-sm font-medium">
-                          Faculty Name
-                        </label>
-                        <input
-                          type="text"
-                          name="facultyName"
-                          value={lessonPlan.facultyName}
-                          onChange={handleLessonPlanChange}
-                          placeholder="Enter Faculty Name"
-                          className={`p-2 border rounded w-full ${
-                            lessonPlanValidation.errors.some((e) =>
-                              e.includes("Faculty Name")
-                            )
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
+                  {/* Validation Errors Display */}
+                  {lessonPlanValidation.errors.length > 0 && (
+                    <div className="bg-red-50 border border-red-200 p-4 rounded">
+                      <div className="flex items-center text-red-700 mb-2">
+                        <AlertCircle className="mr-2 h-5 w-5" />
+                        <span className="font-semibold">Validation Errors</span>
                       </div>
+                      <ul className="list-disc list-inside text-red-600">
+                        {lessonPlanValidation.errors.map((error, index) => (
+                          <li key={index}>{error}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
-                      <div>
-                        <label className="block mb-2 text-sm font-medium">
-                          Semester
-                        </label>
-                        <input
-                          type="text"
-                          name="semester"
-                          value={lessonPlan.semester}
-                          onChange={handleLessonPlanChange}
-                          placeholder="Enter Semester"
-                          className={`p-2 border rounded w-full ${
-                            lessonPlanValidation.errors.some((e) =>
-                              e.includes("Semester")
-                            )
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block mb-2 text-sm font-medium">
+                        Faculty Name
+                      </label>
+                      <input
+                        type="text"
+                        name="facultyName"
+                        value={lessonPlan.facultyName}
+                        onChange={handleLessonPlanChange}
+                        placeholder="Enter Faculty Name"
+                        className={`p-2 border-2 border-black rounded w-full ${
+                          lessonPlanValidation.errors.some((e) =>
+                            e.includes("Faculty Name")
+                          )
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
 
-                      <div>
-                        <label className="block mb-2 text-sm font-medium">
-                          Course Start Date
-                        </label>
-                        <input
-                          type="date"
-                          name="startDate"
-                          value={lessonPlan.startDate}
-                          onChange={handleLessonPlanChange}
-                          placeholder="Choose Start Date"
-                          className={`p-2 border rounded w-full ${
-                            lessonPlanValidation.errors.some((e) =>
-                              e.includes("Start Date")
-                            )
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
-                      </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium">
+                        Semester
+                      </label>
+                      <input
+                        type="text"
+                        name="semester"
+                        value={lessonPlan.semester}
+                        onChange={handleLessonPlanChange}
+                        placeholder="Enter Semester"
+                        className={`p-2 border-2 border-black rounded w-full ${
+                          lessonPlanValidation.errors.some((e) =>
+                            e.includes("Semester")
+                          )
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
 
-                      <div>
-                        <label className="block mb-2 text-sm font-medium">
-                          Course End Date
-                        </label>
-                        <input
-                          type="date"
-                          name="endDate"
-                          value={lessonPlan.endDate}
-                          onChange={handleLessonPlanChange}
-                          placeholder="Choose End Date"
-                          className={`p-2 border rounded w-full ${
-                            lessonPlanValidation.errors.some((e) =>
-                              e.includes("End date")
-                            )
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
-                      </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium">
+                        Course Start Date
+                      </label>
+                      <input
+                        type="date"
+                        name="startDate"
+                        value={lessonPlan.startDate}
+                        onChange={handleLessonPlanChange}
+                        placeholder="Choose Start Date"
+                        className={`p-2 border-2 border-black rounded w-full ${
+                          lessonPlanValidation.errors.some((e) =>
+                            e.includes("Start Date")
+                          )
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
 
-                      <div>
-                        <label className="block mb-2 text-sm font-medium">
-                          Lectures Per Week
-                        </label>
-                        <input
-                          type="number"
-                          name="lecturesPerWeek"
-                          value={lessonPlan.lecturesPerWeek}
-                          onChange={handleLessonPlanChange}
-                          placeholder="Enter Lectures Per Week"
-                          className={`p-2 border rounded w-full ${
-                            lessonPlanValidation.errors.some((e) =>
-                              e.includes("Lectures Per Week")
-                            )
-                              ? "border-red-500"
-                              : ""
-                          }`}
-                        />
-                      </div>
+                    <div>
+                      <label className="block mb-2 text-sm font-medium">
+                        Course End Date
+                      </label>
+                      <input
+                        type="date"
+                        name="endDate"
+                        value={lessonPlan.endDate}
+                        onChange={handleLessonPlanChange}
+                        placeholder="Choose End Date"
+                        className={`p-2 border-2 border-black rounded w-full ${
+                          lessonPlanValidation.errors.some((e) =>
+                            e.includes("End date")
+                          )
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2 text-sm font-medium">
+                        Lectures Per Week
+                      </label>
+                      <input
+                        type="number"
+                        name="lecturesPerWeek"
+                        value={lessonPlan.lecturesPerWeek}
+                        onChange={handleLessonPlanChange}
+                        placeholder="Enter Lectures Per Week"
+                        className={`p-2 border-2 border-black rounded w-full ${
+                          lessonPlanValidation.errors.some((e) =>
+                            e.includes("Lectures Per Week")
+                          )
+                            ? "border-red-500"
+                            : ""
+                        }`}
+                      />
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex justify-center">
-                    {/* Generate Button */}
-                    <button
-                      onClick={handleGenerateLessonPlan}
-                      disabled={!lessonPlanValidation.isValid}
-                      className={`
-                    py-2 rounded transition-colors px-10 m-5
+                <div className="flex justify-center pb-6">
+                  {/* Generate Button */}
+                  <button
+                    onClick={handleGenerateLessonPlan}
+                    disabled={!lessonPlanValidation.isValid}
+                    className={`
+                    py-2 rounded-md transition-colors px-10
                     ${
                       lessonPlanValidation.isValid
-                        ? "bg-blue-500 text-white hover:bg-blue-600"
+                        ? "bg-[#00ffb3] text-black font-bold border-2 border-black hover:bg-opacity-90"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }
-            `}
-                    >
-                      Generate Lesson Plan
-                    </button>
-                  </div>
-                </>
-              )}
-              {/* Content Display */}
-              {selectedSection && generatedContents[selectedSection.id] && (
-                <div className="p-6">
-                  <div className="prose max-w-none">
-                    <ContentDisplay
-                      content={generatedContents[selectedSection.id]!}
-                      section={selectedSection.id}
-                    />
-                  </div>
+                  `}
+                  >
+                    Generate Lesson Plan
+                  </button>
                 </div>
-              )}
+              </>
+            )}
 
-              {!selectedSection && (
-                <div className="p-6">
-                  <div className="prose max-w-none">
-                    <p>Please select a section to view its content.</p>
-                  </div>
+            {/* Content Display */}
+            {selectedSection && generatedContents[selectedSection.id] && (
+              <div className="p-6 border-t-2 border-black">
+                <div className="prose max-w-none">
+                  <ContentDisplay
+                    content={generatedContents[selectedSection.id]!}
+                    section={selectedSection.id}
+                  />
                 </div>
-              )}
-            </div>
-          )}
+              </div>
+            )}
 
-          {/* Loading State */}
-          {isLoading && <LoadingComponent isLoading={isLoading} />}
-        </div>
+            {!selectedSection && (
+              <div className="p-6">
+                <div className="prose max-w-none">
+                  <p>Please select a section to view its content.</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Loading State */}
+        {isLoading && <LoadingComponent isLoading={isLoading} />}
       </main>
+      <footer className="bg-gray-100 border-t border-black py-6 px-4 mt-10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+          {/* Left Section - Copyright */}
+          <div className="text-sm text-gray-700 mb-4 md:mb-0">
+            © {new Date().getFullYear()} LearnGen. All Rights Reserved.
+          </div>
+
+          {/* Right Section - Social Links */}
+          <div className="flex gap-4">
+            <a
+              href="https://github.com/darshitdudhaiya"
+              target="_blank"
+              className="p-2 border border-black rounded-full hover:bg-black hover:text-white transition"
+            >
+              <Github className="w-5 h-5" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/darshitdudhaiya"
+              target="_blank"
+              className="p-2 border border-black rounded-full hover:bg-blue-600 hover:text-white transition"
+            >
+              <Linkedin className="w-5 h-5" />
+            </a>
+            <a
+              href="https://x.com/DarshitDudhaiya"
+              target="_blank"
+              className="p-2 border border-black rounded-full hover:bg-blue-400 hover:text-white transition"
+            >
+              <Twitter className="w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
